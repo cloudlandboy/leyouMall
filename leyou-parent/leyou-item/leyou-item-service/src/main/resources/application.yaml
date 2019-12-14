@@ -1,0 +1,23 @@
+server:
+  port: 7001
+spring:
+  application:
+    name: item-service
+  datasource:
+    url: jdbc:mysql:///leyoumall
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10001/eureka
+  instance:
+    lease-renewal-interval-in-seconds: 5 # 5秒钟发送一次心跳
+    lease-expiration-duration-in-seconds: 10 # 10秒不发送就过期
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+logging:
+  level:
+    com.leyou.item: debug

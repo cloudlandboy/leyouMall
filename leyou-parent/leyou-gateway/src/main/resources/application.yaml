@@ -1,0 +1,24 @@
+server:
+  port: 20001
+spring:
+  application:
+    name: leyou-gateway
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10001/eureka
+    registry-fetch-interval-seconds: 5
+zuul:
+  prefix: /api # 路由路径前缀
+  routes:
+    item-service: /item/** # 商品微服务的映射路径
+    search-service: /search/** # 商品搜索微服务映射路径
+  ignored-services:
+    - upload-service
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000 # 设置hystrix的超时时间5秒
