@@ -9,6 +9,10 @@ import com.leyou.item.pojo.*;
 import com.leyou.item.service.CategoryService;
 import com.leyou.item.service.GoodsService;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +35,8 @@ import java.util.stream.Collectors;
 @Transactional(rollbackFor = Exception.class)
 public class GoodsServiceImpl implements GoodsService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsServiceImpl.class);
+
     @Autowired
     private SpuMapper spuMapper;
 
@@ -48,6 +54,9 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
     private StockMapper StockMapper;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
 
     @Override
@@ -106,6 +115,9 @@ public class GoodsServiceImpl implements GoodsService {
 
         //调用保存sku和库存的方法
         this.saveSkuAndStock(spuBo);
+
+        //保存完毕，调用发布信息
+        this.sendMessage(spuBo.getId(), "insert");
     }
 
     @Override
@@ -162,6 +174,9 @@ public class GoodsServiceImpl implements GoodsService {
 
         //调用保存sku和库存的方法
         this.saveSkuAndStock(spuBo);
+
+        //保存完毕，调用发布信息
+        this.sendMessage(spuBo.getId(), "update");
     }
 
     @Override
@@ -192,4 +207,17 @@ public class GoodsServiceImpl implements GoodsService {
         });
     }
 
+    /**
+     * 发送消息
+     *
+     * @param id   商品id
+     * @param type
+     */
+    private void sendMessage(Long id, String type) {
+        try {
+            amqpTemplate.convertAndSend("item." + type, id);
+        } catch (AmqpException e) {
+            LOGGER.error("发送消息失败，消息类型：{}，商品id：{}", "item." + type, id);
+        }
+    }
 }

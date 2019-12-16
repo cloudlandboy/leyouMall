@@ -13,6 +13,7 @@ zuul:
   routes:
     item-service: /item/** # 商品微服务的映射路径
     search-service: /search/** # 商品搜索微服务映射路径
+    user-service: /user/** # 用户信息微服务映射路径
   ignored-services:
     - upload-service
 hystrix:
@@ -21,4 +22,4 @@ hystrix:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 5000 # 设置hystrix的超时时间5秒
+            timeoutInMilliseconds: 10000 # 设置hystrix的超时时间5秒

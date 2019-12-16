@@ -8,6 +8,14 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
+  rabbitmq:
+    host: 172.16.145.141
+    username: leyou
+    password: 123456
+    virtual-host: /leyou
+    template:
+      exchange: LEYOU.ITEM.EXCHANGE
+    publisher-confirms: true
 eureka:
   client:
     service-url:

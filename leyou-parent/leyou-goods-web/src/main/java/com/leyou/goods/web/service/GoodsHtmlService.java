@@ -23,4 +23,10 @@ public interface GoodsHtmlService {
      * @param model
      */
     void asyncExcuteCreateHtml(Map<String, Object> model);
+
+    /**
+     * 删除静态页面
+     * @param id
+     */
+    void deleteHtml(Long id);
 }

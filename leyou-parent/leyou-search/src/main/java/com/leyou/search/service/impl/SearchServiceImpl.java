@@ -14,19 +14,17 @@ import com.leyou.search.repository.GoodsRepository;
 import com.leyou.search.service.SearchService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.elasticsearch.index.query.*;
-import org.elasticsearch.script.Script;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.Operator;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.LongTerms;
 import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.bucket.terms.UnmappedTerms;
-import org.elasticsearch.search.aggregations.support.ValueType;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
@@ -34,9 +32,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import javax.swing.text.html.Option;
 import java.io.IOException;
-import java.security.Key;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -186,6 +182,20 @@ public class SearchServiceImpl implements SearchService {
         //添加聚合出的规格参数到搜索结果中，没有查询就是null
         searchPageResult.setSpecs(specs);
         return searchPageResult;
+    }
+
+    @Override
+    public void createIndex(Long id) throws IOException {
+        //查询spu
+        Spu spu = this.goodsClient.querySpuById(id);
+        Goods goods = this.buildGoods(spu);
+        //保存
+        this.goodsRepository.save(goods);
+    }
+
+    @Override
+    public void deleteIndex(Long id) {
+        this.goodsRepository.deleteById(id);
     }
 
     /**

@@ -55,4 +55,10 @@ public class GoodsHtmlServiceImpl implements GoodsHtmlService {
     public void asyncExcuteCreateHtml(Map<String, Object> model) {
         ThreadUtils.execute(() -> createHtml(model));
     }
+
+    @Override
+    public void deleteHtml(Long id) {
+        File file = new File("/home/cloudlandboy/Project/leyou/html/item/", id + ".html");
+        file.deleteOnExit();
+    }
 }

@@ -5,6 +5,8 @@ import com.leyou.item.pojo.Spu;
 import com.leyou.search.pojo.Goods;
 import com.leyou.search.pojo.SearchRequest;
 
+import java.io.IOException;
+
 /**
  * @Author cloudlandboy
  * @Date 2019/12/9 下午7:35
@@ -27,4 +29,16 @@ public interface SearchService {
      * @return
      */
     PageResult<Goods> searchGoods(SearchRequest searchRequest);
+
+    /**
+     * 创建或者更新索引信息
+     * @param id
+     */
+    void createIndex(Long id) throws IOException;
+
+    /**
+     * 删除索引信息
+     * @param id
+     */
+    void deleteIndex(Long id);
 }
