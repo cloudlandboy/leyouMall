@@ -14,12 +14,30 @@ zuul:
     item-service: /item/** # 商品微服务的映射路径
     search-service: /search/** # 商品搜索微服务映射路径
     user-service: /user/** # 用户信息微服务映射路径
+    auth-service: /auth/** #授权中心微服务
   ignored-services:
     - upload-service
+  add-host-header: true
+  sensitive-headers: #配置禁止使用的头信息，这里设置为null，否则设置cookie无效
+ribbon:
+  ReadTimeout: 8000
+  SocketTimeout: 60000
 hystrix:
   command:
     default:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 10000 # 设置hystrix的超时时间5秒
+            timeoutInMilliseconds: 10000 # 设置hystrix的超时时间10秒
+leyou:
+  jwt:
+    pubKeyPath: /home/cloudlandboy/Project/leyou/rsa/rsa.pub # 公钥地址
+    cookieName: LEYOU_TOKEN # cookie的名称
+  filter:
+    allowPaths:
+      - /api/auth
+      - /api/search
+      - /api/user/register
+      - /api/user/check
+      - /api/user/code
+      - /api/item

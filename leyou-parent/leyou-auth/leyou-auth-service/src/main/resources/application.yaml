@@ -1,0 +1,20 @@
+server:
+  port: 7007
+spring:
+  application:
+    name: auth-service
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10001/eureka
+    registry-fetch-interval-seconds: 10
+  instance:
+    lease-renewal-interval-in-seconds: 5 # 每隔5秒发送一次心跳
+    lease-expiration-duration-in-seconds: 10 # 10秒不发送就过期
+leyou:
+  jwt:
+    secret: ea61b462@leyou@9966@leyou@33da # 登录校验的密钥
+    pubKeyPath: /home/cloudlandboy/Project/leyou/rsa/rsa.pub # 公钥地址
+    priKeyPath: /home/cloudlandboy/Project/leyou/rsa/rsa.pri # 私钥地址
+    expire: 30 # 过期时间,单位分钟
+    cookieName: LEYOU_TOKEN

@@ -17,6 +17,9 @@
         <module>leyou-goods-web</module>
         <module>leyou-user</module>
         <module>leyou-sms-service</module>
+        <module>leyou-auth</module>
+        <module>leyou-auth/leyou-auth-common</module>
+        <module>leyou-auth/leyou-auth-service</module>
     </modules>
     <packaging>pom</packaging>
 
