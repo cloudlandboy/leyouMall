@@ -2,9 +2,6 @@ package com.leyou.item.api;
 
 import com.leyou.item.pojo.SpecGroup;
 import com.leyou.item.pojo.SpecParam;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,4 +47,13 @@ public interface SpecificationApi {
      */
     @GetMapping("/{cid}")
     public List<SpecGroup> querySpecsByCid(@PathVariable Long cid);
+
+    /**
+     * 根据规格参数Id查询规格参数
+     *
+     * @param ids
+     * @return
+     */
+    @GetMapping("/params/query")
+    public List<SpecParam> querySpecsByIds(@RequestParam("ids") List<Long> ids);
 }

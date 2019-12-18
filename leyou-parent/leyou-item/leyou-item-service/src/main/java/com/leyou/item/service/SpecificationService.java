@@ -46,4 +46,13 @@ public interface SpecificationService {
      * @return
      */
     List<SpecGroup> querySpecsByCid(Long cid);
+
+
+    /**
+     * 根据规格参数Id查询规格参数
+     *
+     * @param ids
+     * @return
+     */
+    List<SpecParam> querySpecsByIds(List<Long> ids);
 }

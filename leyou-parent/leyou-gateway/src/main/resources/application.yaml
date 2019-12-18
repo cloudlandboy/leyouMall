@@ -15,6 +15,7 @@ zuul:
     search-service: /search/** # 商品搜索微服务映射路径
     user-service: /user/** # 用户信息微服务映射路径
     auth-service: /auth/** #授权中心微服务
+    cart-service: /cart/** #购物车微服务
   ignored-services:
     - upload-service
   add-host-header: true

@@ -20,6 +20,7 @@
         <module>leyou-auth</module>
         <module>leyou-auth/leyou-auth-common</module>
         <module>leyou-auth/leyou-auth-service</module>
+        <module>leyou-cart</module>
     </modules>
     <packaging>pom</packaging>
 

@@ -74,4 +74,19 @@ public class SpecificationController {
         }
         return ResponseEntity.ok(specGroups);
     }
+
+    /**
+     * 根据规格参数Id查询规格参数
+     *
+     * @param ids
+     * @return
+     */
+    @GetMapping("/params/query")
+    public ResponseEntity<List<SpecParam>> querySpecsByIds(@RequestParam("ids") List<Long> ids) {
+        List<SpecParam> specParams = this.specificationService.querySpecsByIds(ids);
+        if (CollectionUtils.isEmpty(specParams)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(specParams);
+    }
 }

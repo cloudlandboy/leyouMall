@@ -1,6 +1,7 @@
 package com.leyou.item.mapper;
 
 import com.leyou.item.pojo.SpecParam;
+import tk.mybatis.mapper.additional.idlist.SelectByIdListMapper;
 import tk.mybatis.mapper.common.Mapper;
 
 /**
@@ -9,6 +10,6 @@ import tk.mybatis.mapper.common.Mapper;
  * @Since 1.0.0
  */
 
-public interface SpecParamMapper extends Mapper<SpecParam> {
+public interface SpecParamMapper extends Mapper<SpecParam>, SelectByIdListMapper<SpecParam, Long> {
 
 }

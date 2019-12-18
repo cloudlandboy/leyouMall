@@ -184,6 +184,11 @@ public class GoodsServiceImpl implements GoodsService {
         return this.spuMapper.selectByPrimaryKey(id);
     }
 
+    @Override
+    public Sku querySkuById(Long id) {
+        return this.skuMapper.selectByPrimaryKey(id);
+    }
+
 
     /**
      * 保存sku和库存

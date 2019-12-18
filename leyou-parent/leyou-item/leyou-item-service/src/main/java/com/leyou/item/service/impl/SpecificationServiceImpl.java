@@ -8,7 +8,6 @@ import com.leyou.item.service.SpecificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.genid.GenId;
 
 import java.util.List;
 
@@ -65,5 +64,10 @@ public class SpecificationServiceImpl implements SpecificationService {
         });
 
         return specGroups;
+    }
+
+    @Override
+    public List<SpecParam> querySpecsByIds(List<Long> ids) {
+        return this.specParamMapper.selectByIdList(ids);
     }
 }
