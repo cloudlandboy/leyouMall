@@ -95,7 +95,7 @@
                         <span><em>已节省：</em><i>-¥20.00</i></span>
                     </div>
                     <div class="sumbtn">
-                        <a class="sum-btn" href="getOrderInfo.html" target="_blank">结算</a>
+                        <a class="sum-btn" href="javascript:;" @click="toOrderInfo()">结算</a>
                     </div>
                 </div>
             </div>
@@ -403,6 +403,18 @@
                     indexs.push(this.carts.indexOf(item));
                 });
                 this.deleteCart(indexs);
+            },
+            toOrderInfo() {
+                // 判断是否登录
+                ly.verifyUser().then(() => {
+                    //先将勾选的商品记录下来
+                    ly.store.set("selectedCarts", this.selected);
+                    // 已登录
+                    window.location.href = "/getOrderInfo.html"
+                }).catch(() => {
+                    // 未登录
+                    window.location.href = "/login.html?returnUrl=" + window.location.href;
+                })
             }
         }
     })
