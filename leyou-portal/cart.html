@@ -309,7 +309,7 @@
                             return {skuId: skuId, num: num}
                         });
                         ly.http.post("/cart/merge", temp).then(() => {
-                            ly.http.get("/cart").then(({data}) => {
+                            ly.http.get("/cart?t=" + new Date().getTime()).then(({data}) => {
                                 this.carts = data;
                                 //默认全部选中
                                 this.selected = this.carts;
@@ -321,7 +321,7 @@
                         });
                     } else {
                         //没有直接请求
-                        ly.http.get("/cart").then(({data}) => {
+                        ly.http.get("/cart?t=" + new Date().getTime()).then(({data}) => {
                             this.carts = data;
                             //默认全部选中
                             this.selected = this.carts;
@@ -405,12 +405,16 @@
                 this.deleteCart(indexs);
             },
             toOrderInfo() {
+                //判断是否勾选商品，没有不处理
+                if (this.selected.length < 1) {
+                    return;
+                }
                 // 判断是否登录
                 ly.verifyUser().then(() => {
                     //先将勾选的商品记录下来
                     ly.store.set("selectedCarts", this.selected);
                     // 已登录
-                    window.location.href = "/getOrderInfo.html"
+                    window.location.href = "/getOrderInfo.html";
                 }).catch(() => {
                     // 未登录
                     window.location.href = "/login.html?returnUrl=" + window.location.href;

@@ -111,7 +111,7 @@
                             // 付款成功
                             clearInterval(taskId);
                             // 跳转到付款成功页
-                            location.href = "/paysuccess.html?orderId=" + this.orderId;
+                            location.href = "/paysuccess.html?orderId=" + this.orderId + "&total_amount=" + ly.formatPrice(this.actualPay);
                         } else if (i === 2) {
                             // 付款失败
                             clearInterval(taskId);

@@ -28,7 +28,7 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         LoginInterceptor loginInterceptor = new LoginInterceptor(jwtProperties);
-        //拦截路径（所有）
-        registry.addInterceptor(loginInterceptor).addPathPatterns("/**");
+        //拦截路径（不拦截支付宝异步请求）
+        registry.addInterceptor(loginInterceptor).excludePathPatterns("/akipayNotify");
     }
 }

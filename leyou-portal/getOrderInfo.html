@@ -130,6 +130,8 @@
                         <ul class="payType">
                             <li :class="{selected: order.paymentType==1}" @click="order.paymentType=1">微信付款<span
                                     title="点击取消选择"></span></li>
+                            <li :class="{selected: order.paymentType==3}" @click="order.paymentType=3">支付宝付款<span
+                                    title="点击取消选择"></span></li>
                             <li :class="{selected: order.paymentType==2}" @click="order.paymentType=2">货到付款<span
                                     title="点击取消选择"></span></li>
                         </ul>
@@ -319,13 +321,26 @@
                         }).then(({data}) => {
                             //删除掉下单的购物车
                             ly.store.del("selectedCarts");
-                            // 在线支付，需要到付款页
-                            window.location = "pay.html?orderId=" + data + "&actualPay=" + this.actualPay;
+                            //把redis购物车中下单的商品删除掉
+                            let skuIds = this.carts.map((item) => item.skuId).join(',');
+                            ly.http.delete("/cart/" + skuIds).then(() => {
+                                // 在线支付，需要到付款页
+                                switch (this.order.paymentType) {
+                                    case 1:
+                                        //微信支付
+                                        window.location = "pay.html?orderId=" + data + "&actualPay=" + this.actualPay;
+                                        break;
+                                    case 3:
+                                        //支付宝支付
+                                        window.location = ly.http.defaults.baseURL + "/order/alipay/" + data + "?actualPay=" + this.actualPay;
+                                        break;
+                                }
+                            });
                         }).catch((resp) => {
                             alert("订单提交失败，可能是缺货!")
                         })
                     }).catch(() => {
-                        alert("登录失效!")
+                        alert("登录失效!");
                         window.location.href = "/login.html?returnUrl=" + window.location.href;
                     });
                 }

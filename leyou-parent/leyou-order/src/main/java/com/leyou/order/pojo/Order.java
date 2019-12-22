@@ -24,7 +24,7 @@ public class Order {
     private Long actualPay;
 
     /**
-     * 支付类型，1、在线支付，2、货到付款
+     * 支付类型，1、在线支付，2、货到付款，3、支付宝支付
      */
     @NotNull
     private Integer paymentType;

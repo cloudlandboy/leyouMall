@@ -1,8 +1,11 @@
 package com.leyou.order.controller;
 
+import com.alipay.api.AlipayApiException;
 import com.leyou.common.pojo.PageResult;
 import com.leyou.order.pojo.Order;
 import com.leyou.order.service.OrderService;
+import com.leyou.order.utils.AliPayHelper;
+import com.leyou.order.utils.AliPayHelper.TradeStatus;
 import com.leyou.order.utils.PayHelper;
 import com.leyou.order.utils.PayState;
 import io.swagger.annotations.*;
@@ -12,7 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @Api("订单服务接口")
@@ -23,6 +31,10 @@ public class OrderController {
 
     @Autowired
     private PayHelper payHelper;
+
+    @Autowired
+    private AliPayHelper aliPayHelper;
+
 
     /**
      * 创建订单
@@ -134,6 +146,89 @@ public class OrderController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(url);
+    }
+
+    /**
+     * 支付宝支付
+     *
+     * @param orderId
+     * @return
+     */
+    @GetMapping("alipay/{id}")
+    @ApiOperation(value = "支付宝支付，跳转到支付页面", notes = "支付宝支付")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "订单编号", type = "Long"),
+            @ApiImplicitParam(name = "actualPay", value = "应付金额", type = "Integer")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "写出支付页面"),
+            @ApiResponse(code = 404, message = "生成支付页面失败"),
+            @ApiResponse(code = 500, message = "服务器异常")
+    })
+    public String alipay(@PathVariable("id") String orderId, Integer actualPay, HttpServletResponse response) throws Exception {
+        DecimalFormat df = new DecimalFormat("0.00");
+        String money = df.format(actualPay / 100.00);
+        String form = this.aliPayHelper.pay(orderId, money);
+
+        if (StringUtils.isBlank(form)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND).toString();
+        }
+        response.setContentType("text/html;charset=utf-8");
+        response.getWriter().write(form);
+        response.getWriter().flush();
+        response.getWriter().close();
+        return null;
+    }
+
+    /**
+     * 获取支付宝POST过来反馈信息
+     */
+    @PostMapping("/akipayNotify")
+    public void akipayNotify(HttpServletRequest request) throws AlipayApiException {
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        Map<String, String> params = new HashMap<String, String>(parameterMap.size());
+        for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+            params.put(entry.getKey(), StringUtils.join(entry.getValue(), ","));
+        }
+        System.out.println(params);
+        boolean signVerified = this.aliPayHelper.rsaCheckV1(params);
+        //验证成功
+        if (signVerified) {
+            //商户订单号orderId
+            String out_trade_no = params.get("out_trade_no");
+
+            //支付宝交易号
+            String trade_no = params.get("trade_no");
+
+            //交易状态
+            String trade_status = params.get("trade_status");
+
+            if (TradeStatus.TRADE_FINISHED.equals(trade_status)) {
+                //判断该笔订单是否在商户网站中已经做过处理
+                //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
+                //如果有做过处理，不执行商户的业务程序
+
+                //注意：
+                //退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
+            } else if (TradeStatus.TRADE_SUCCESS.equals(trade_status)) {
+                //判断该笔订单是否在商户网站中已经做过处理
+                //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
+                //如果有做过处理，不执行商户的业务程序
+                //注意：
+                //付款完成后，支付宝系统发送该交易状态通知
+
+                //更改订单状态
+                this.orderService.updateStatus(Long.valueOf(out_trade_no), 2);
+            }
+
+        } else {
+            //验证失败
+            //调试用，写文本函数记录程序运行情况是否正常
+            //String sWord = AlipaySignature.getSignCheckContentV1(params);
+            //AlipayConfig.logResult(sWord);
+        }
+
+
     }
 
     /**
