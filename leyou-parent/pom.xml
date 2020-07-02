@@ -43,7 +43,7 @@
         <mybatis.starter.version>2.1.1</mybatis.starter.version>
         <mapper.starter.version>2.1.5</mapper.starter.version>
         <druid.starter.version>1.1.10</druid.starter.version>
-        <mysql.version>5.1.38</mysql.version>
+        <mysql.version>8.0.16</mysql.version>
         <pageHelper.starter.version>1.2.4</pageHelper.starter.version>
         <fastDFS.client.version>1.26.7</fastDFS.client.version>
     </properties>
